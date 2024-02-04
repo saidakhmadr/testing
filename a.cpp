@@ -7,6 +7,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define endl '\n'
+
 using ll = int64_t;
 using ill = long long int;
 using ld = long double;
@@ -16,37 +18,34 @@ using ld = long double;
 #else
     //debug(...) 42
 #endif
-const int T = 96, M = 96;
-int cached[T][M];
- 
 void solve() {
-  int n;
-  cin >> n;
-  vector<int> a(n + 1);
-  for (int i = 1; i <= n; i++) {
-    cin >> a[i];
-  }
-  int ans = 0;
-  for (int k = 1; k <= n; k++) {
-    if (n % k == 0) {
-      int m = 0;
-      for (int i = 1; m != 1 && i + k <= n; i++) {
-        int t = abs(a[i + k] - a[i]);
-        if (t < m) swap(t, m);
-        if (t < T && m < M && cached[t][m]) {
-          m = cached[t][m];
-        } else {
-          int tmp = __gcd(t, m);
-          if (t < T && m < M) {
-            cached[t][m] = tmp;
-          }
-          m = tmp;
+int a, b, r;
+    cin >> a >> b >> r;
+    vector<int> v;
+    int cur = -1;
+    for(int i = 61;i >= 0;--i) if(((1ll << i) & a) != ((1ll << i) & b))
+    {
+        if(!~cur)
+        {
+            if((1ll << i) & a) cur = 1;
+            else cur = 2;
         }
-      }
-      ans += (m != 1);
+        else
+        {
+            if(cur == 1 && ((1ll << i) & a)) v.push_back(i);
+            if(cur == 2 && ((1ll << i) & b)) v.push_back(i);
+        }
     }
-  }
-  cout << ans << '\n';
+    int x = 0;
+    for(auto k : v)
+    {
+        if(r >= (1ll << k))
+        {
+            x |= 1ll << k;
+            r -= 1ll << k;
+        }
+    }
+    cout << abs((a ^ x) - (b ^ x)) << endl;
 }
 
 int main() {
